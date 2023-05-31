@@ -9,23 +9,23 @@ export default async function handler(req, res) {
 
     const validateName = (name) => {
         if (!name) {
-            return new Error('Name cannot be empty')
+            return 'Name cannot be empty';
         }
-        const nameRegex = /^[A-Za-z\s]+$/
+        const nameRegex = /^[A-Za-z\s]+$/;
         if (!nameRegex.test(name)) {
-            return new Error('Invalid name')
+            return 'Invalid name';
         }
-        return null
-    }
+        return null;
+    };
 
     const validateEmail = (email) => {
         if (email === '') {
-            return new Error('Email cannot be empty');
+            return 'Email cannot be empty';
         }
 
         const emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
         if (!emailRegex.test(email)) {
-            return new Error('Invalid email address');
+            return 'Invalid email address';
         }
 
         return null;
@@ -33,12 +33,12 @@ export default async function handler(req, res) {
 
     const validatePassword = (password) => {
         if (password === '') {
-            return new Error('Password cannot be empty');
+            return 'Password cannot be empty';
         }
 
         const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,}$/;
         if (!passwordRegex.test(password)) {
-            return new Error('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character');
+            return 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character';
         }
 
         return null;
@@ -52,15 +52,15 @@ export default async function handler(req, res) {
     const passwordError = validatePassword(password);
 
     if (nameError) {
-        return res.status(400).json({ error: nameError.message })
+        return res.status(400).json({ error: nameError })
     }
     if (emailError) {
-        return res.status(400).json({ error: emailError.message });
+        return res.status(400).json({ error: emailError });
 
     }
 
     if (passwordError) {
-        return res.status(400).json({ error: passwordError.message });
+        return res.status(400).json({ error: passwordError });
 
     }
 
