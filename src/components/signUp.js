@@ -1,12 +1,13 @@
-import { headers } from 'next/dist/client/components/headers'
-import React, { useRef, useState } from 'react'
+
+import { useRef, useState } from 'react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
 async function createUser(name, email, password) {
 
-    const response = await fetch('/api/signup/', {
+    const response = await fetch('/api/auth/signup/', {
         method: 'POST',
         body: JSON.stringify({ name, email, password }),
         headers: {
@@ -23,14 +24,14 @@ async function createUser(name, email, password) {
     return data
 }
 
-const AuthForm = () => {
+function AuthForm() {
 
     const nameInputRef = useRef()
     const emailInputRef = useRef()
     const passwordInputRef = useRef()
 
     const [isLogin, setIsLogin] = useState(true);
-    // const router = useRouter()
+    const router = useRouter()
 
     function switchAuthModeHandler() {
         setIsLogin((prevState) => !prevState);
@@ -38,7 +39,6 @@ const AuthForm = () => {
 
     async function submitHandler(event) {
         event.preventDefault()
-        const enteredName = nameInputRef.current.value
         const enteredEmail = emailInputRef.current.value
         const enteredPassword = passwordInputRef.current.value
 
@@ -46,16 +46,17 @@ const AuthForm = () => {
         if (isLogin) {
             const result = await signIn('credentials', {
                 redirect: false,
-                name: enteredName,
                 email: enteredEmail,
                 password: enteredPassword,
             })
-            // if (!result.error) {
-            //     // set some auth state
-            //     router.replace('/profile')
-            // }
+            // console.log(result)
+            router.replace('/profile')
+            if (!result.error) {
+                // set some auth state
+            }
         } else {
             try {
+                const enteredName = nameInputRef.current.value
                 const result = await createUser(enteredName, enteredEmail, enteredPassword)
             } catch (error) {
                 console.log(error)
@@ -67,10 +68,12 @@ const AuthForm = () => {
         <section>
             <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
             <form onSubmit={submitHandler}>
-                <div>
-                    <label htmlFor='name'>Your name</label>
-                    <input type='text' id='name' required ref={nameInputRef} />
-                </div>
+                {!isLogin &&
+                    < div >
+                        <label htmlFor='name'>Your name</label>
+                        <input type='text' id='name' required ref={nameInputRef} />
+                    </div>
+                }
                 <div>
                     <label htmlFor='email'>Your Email</label>
                     <input type='email' id='email' required ref={emailInputRef} />
@@ -89,7 +92,7 @@ const AuthForm = () => {
                     </button>
                 </div>
             </form>
-        </section>
+        </section >
     );
 }
 
