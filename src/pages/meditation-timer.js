@@ -1,9 +1,7 @@
+import Timer from "@/components/timer/timer";
+
 function MeditationTimer() {
-    return (
-        <div>
-            <h1>Meditation Timer</h1>
-        </div>
-    );
+    return <Timer />
 }
 
 export default MeditationTimer;
